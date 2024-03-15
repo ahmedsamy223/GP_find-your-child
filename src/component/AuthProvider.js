@@ -1,7 +1,7 @@
 import React from 'react';
 // import { AuthContext } from './src/context/auth-context';
-import { AuthContext } from './../context/auth-context';
-import { useAuth } from './../context/auth-context';
+import { AuthContext,useAuth } from './../context/auth-context';
+// import { useAuth } from './../context/auth-context';
 
 export const AuthProvider = ({ children }) => {
  const auth = useAuth();

@@ -11,6 +11,7 @@ const NewsArticle = ({ article }) => {
   const handleLike = () => {
     setHasLiked(!hasLiked); // Toggle the like state
     setLikes(hasLiked ? likes - 1 : likes + 1); // Increase or decrease likes based on the current state
+    
   };
 
   return (
