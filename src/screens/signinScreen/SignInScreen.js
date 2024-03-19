@@ -6,26 +6,57 @@ import CustomButton from "../../component/CustomButtom";
 import CustomInput from "../../component/customInput/CustomInput";
 import { useAuth } from "../../context/auth-context";
 
-
 const SignInScreen = () => {
   const navigation = useNavigation();
-  const {setUser}=useAuth();
-  async function signInWithEmail() {
-    setLoading(true);
-    const { error,data } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-    if (error) Alert.alert(error.message);
-    else {
-      setUser(data.user)
-    }
-    console.log(data.user)
-    setLoading(false);
-  }
+  // const {setUser}=useAuth();
+
+  // async function signInWithEmail() {
+  //   setLoading(true);
+  //   const { error,data } = await supabase.auth.signInWithPassword({
+  //     email: email,
+  //     password: password,
+  //   });
+  //   if (error) Alert.alert(error.message);
+  //   else {
+  //     setUser(data.user)
+  //   }
+  //   console.log(data.user)
+  //   setLoading(false);
+  // }
+  const { setCredentials } = useAuth();
 
   const onForgetPassPressed = () => {
     navigation.navigate("ForgetPassword");
+  };
+
+  const signInWithEmail = async () => {
+    const payload = {
+      email,
+      password,
+    };
+    try {
+      const response = await fetch("http://192.168.1.13:3000/users/login", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error:", errorData);
+      }
+      const data = await response.json();
+      await setCredentials(data.user, data.token);
+      // console.log(data);
+    } catch (error) {
+      //   console.error(
+      //     "There has been a problem with your fetch operation:",
+      //     error
+      //   );
+    }
   };
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
@@ -78,7 +109,7 @@ const SignInScreen = () => {
       style={{ rowGap: 50, backgroundColor: "white" }}
       className="flex-1 pt-5 px-6"
     >
-      <View style={{ rowGap: 30,flex:1 }}>
+      <View style={{ rowGap: 30, flex: 1 }}>
         <CustomInput
           placeholder={"Email"}
           value={email}
@@ -104,6 +135,5 @@ const SignInScreen = () => {
     </View>
   );
 };
-
 
 export default SignInScreen;

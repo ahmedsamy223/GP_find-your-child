@@ -23,9 +23,7 @@ const ViewScreen = () => {
 
   // Custom component for Tab 2
   function Tab2Screen() {
-    return (
-      <ImageSelectionScreen/>
-    )
+    return <ImageSelectionScreen />;
   }
 
   // Custom component for Tab 3

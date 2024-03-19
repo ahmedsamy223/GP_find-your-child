@@ -1,11 +1,9 @@
-import { View, Text,StyleSheet} from 'react-native'
+import { View, Text,StyleSheet,Image} from 'react-native'
 import React from 'react'
-import { useAuth } from '../../context/auth-context'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 const ViewScreen2 = () => {
   const Tab = createBottomTabNavigator();
- const {user}=useAuth()
   // Custom component for Tab 1
   function Tab1Screen() {
     return (

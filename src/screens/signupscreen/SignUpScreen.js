@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import CustomButton from "../../component/CustomButtom";
 import Dropdown from "../../component/Dropdown";
 import CustomInput from "../../component/customInput/CustomInput";
-import { useAuth, AuthContext } from "../../context/auth-context";
+import { useAuth } from "../../context/auth-context";
 const SignUpScreen = () => {
   const [name, setName] = useState("");
   const [email, setUserEmail] = useState("");
@@ -14,7 +14,7 @@ const SignUpScreen = () => {
   const [confirmPassword, setConfrimPassWord] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedValue, setSelectedValue] = useState(null);
-  const { setUser } = useAuth();
+
   // async function signUpWithEmail() {
   //   setLoading(true);
   //   const {
@@ -39,7 +39,7 @@ const SignUpScreen = () => {
   //   setLoading(false);
   //   console.log("Form submitted successfully!");
   // }
-  const { setUserData, getUser, token } = useContext(AuthContext);
+  const { setCredentials } = useAuth();
 
   const signUpWithEmail = async () => {
     const payload = {
@@ -67,8 +67,8 @@ const SignUpScreen = () => {
         console.error("Error:", errorData);
       }
       const data = await response.json();
-      console.log(data);
-      setUserData(data.newUser, data.token);
+      // console.log(data);
+      await setCredentials(data.newUser, data.token);
     } catch (error) {
       //   console.error(
       //     "There has been a problem with your fetch operation:",
@@ -76,10 +76,10 @@ const SignUpScreen = () => {
       //   );
     }
   };
-  useEffect(() => {
-    console.log("token", token);
-    console.log("getUser()", getUser());
-  }, [token, getUser]);
+  // useEffect(() => {
+  //   console.log("token", token);
+  //   console.log("getUser()", getUser());
+  // }, [token, getUser]);
 
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);

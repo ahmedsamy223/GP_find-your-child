@@ -11,7 +11,7 @@ export const AppStackNavigator = () => {
     screenOptions={{
       headerShown: false
     }}>
-      {user.user_metadata.type==="Guest"? 
+      {user.role==="parent"? 
       <Stack.Screen
         name="ViewScreen"
         component={ViewScreen}

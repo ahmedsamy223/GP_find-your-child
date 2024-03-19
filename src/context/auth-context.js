@@ -1,38 +1,22 @@
-import {
-  createContext,
-  useState,
-  // ,useContext
-} from "react";
-import * as SecureStore from "expo-secure-store";
+import { createContext, useContext } from "react";
 
-const key = "user";
+import { setUserData } from "../utils/storage";
 
 export const AuthContext = createContext({
+  user: null,
+  setUser: null,
   token: null,
-  getUser: () => {},
-  setToken: () => {},
-  setUserData: () => {},
+  setToken: null,
 });
 
 export const useAuth = () => {
-  const [token, setToken] = useState(null);
+  const { user, setUser, token, setToken } = useContext(AuthContext);
 
-  const setUserData = async (userData, token) => {
-    await SecureStore.setItemAsync(key, JSON.stringify({ userData, token }));
+  const setCredentials = async (user, token) => {
+    // console.log(user,token)
+    await setUserData(user, token);
+    setUser(user);
     setToken(token);
   };
-  const getUser = async () => {
-    const data = await SecureStore.getItemAsync(key);
-    const json = JSON.parse(data);
-    return json.userData;
-  };
-
-  // const getToken= async ()=>{
-  //   const data = await SecureStore.getItemAsync(key);
-  //   const json = JSON.parse(data);
-  //   setToken(json.token)
-  //   return json.token
-  // }
-  return { setUserData, getUser, token };
-  // authe:token
+  return { user, token, setCredentials };
 };

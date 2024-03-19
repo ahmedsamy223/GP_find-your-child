@@ -1,21 +1,58 @@
-import { React, useState } from "react";
-import { Text, TouchableOpacity, StyleSheet } from "react-native";
+import { React, useState, useEffect } from "react";
+import {
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Modal,
+  TextInput,
+} from "react-native";
 import moment from "moment";
 import { View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-
+import { useAuth } from "../../../context/auth-context";
+import { useNavigation } from "@react-navigation/native";
+import NewScreen from "../Add/NewScreen";
 const NewsArticle = ({ article }) => {
+  const navigation = useNavigation();
   const [likes, setLikes] = useState(article.likes || 0);
-  const [hasLiked, setHasLiked] = useState(false); // State to track if the user has liked the article
-
+  const { setUserData, user, token } = useAuth();
+  // console.log(article);
+  const [hasLiked, setHasLiked] = useState(
+    article.likedBy.find((userName) => userName === user.userName)
+  ); // State to track if the user has liked the article
+  const likeArticle = async () => {
+    try {
+      const response = await fetch(
+        `http://192.168.1.13:3000/articles/like/${article._id}`,
+        {
+          credentials: "include",
+          method: "POST",
+          headers: {
+            authorization: token,
+          },
+        }
+      );
+      if (!response.ok) {
+        console.log(response);
+        throw new Error("Network response was not ok" + response);
+      }
+      const data = await response.json();
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const handleLike = () => {
-    setHasLiked(!hasLiked); // Toggle the like state
-    setLikes(hasLiked ? likes - 1 : likes + 1); // Increase or decrease likes based on the current state
-    
+    try {
+      likeArticle();
+      setHasLiked(!hasLiked); // Toggle the like state
+      setLikes(hasLiked ? likes - 1 : likes + 1); // Increase or decrease likes based on the current state
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
-    <TouchableOpacity style={styles.container} disabled={true}>
+    <View style={styles.container}>
       <Text style={styles.userName}>By {article.userName}</Text>
       <Text style={styles.title}>{article.title}</Text>
       <Text style={styles.description}>{article.description}</Text>
@@ -32,7 +69,7 @@ const NewsArticle = ({ article }) => {
           <Text style={styles.likeCountText}>{likes}</Text>
         </>
       </TouchableOpacity>
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -42,9 +79,8 @@ const styles = StyleSheet.create({
     padding: 25, // Ensure no horizontal padding
     borderRadius: 10,
     backgroundColor: "#f8f8f8",
-    gap:15
+    gap: 15,
   },
-
   userName: {
     fontSize: 16,
     color: "#666",
@@ -53,7 +89,6 @@ const styles = StyleSheet.create({
     fontSize: 20, // Adjust font size
     fontWeight: "500", // Adjust font weight
     color: "#000",
-   
   },
   description: {
     fontSize: 16, // Adjust font size
